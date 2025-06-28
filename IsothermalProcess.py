@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 
 from Process import Process
 
@@ -13,8 +14,8 @@ class IsothermalProcess(Process):
         P = p * v / V
         return V, P
 
-    def get_equation(v, p, c, **kargs):
-        return v * p - c
+    def get_equation(v, p, c, args):
+        return sp.Eq(v * p, c)
 
     def evaluate(self, v):
         return self.c / v

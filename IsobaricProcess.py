@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 
 from Process import Process
 
@@ -13,8 +14,8 @@ class IsobaricProcess(Process):
         P = p * np.ones(2)
         return V, P
 
-    def get_equation(v, p, c, **kargs):
-        return p - c
+    def get_equation(v, p, c, args):
+        return sp.Eq(p, c)
 
     def evaluate(self, v):
         return self.c

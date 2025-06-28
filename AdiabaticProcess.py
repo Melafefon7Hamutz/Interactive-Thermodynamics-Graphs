@@ -1,14 +1,24 @@
 import numpy as np
+import sympy as sp
 
 from Process import Process
 
+
 class AdiabaticProcess(Process):
-    def __init__(self, parent, p0, v0, args={'gamma':5/3}):
-        if not 'gamma' in args:
-            args={'gamma':5/3}
-        gamma = args['gamma']
-        self.gamma = gamma
+    default_args = {'dof': 3}
+
+    def __init__(self, parent, p0, v0, args):
+        args = self.check_args(args)
+        self.dof = args['dof']
+        self.gamma = (self.dof+2)/self.dof
         super().__init__(parent, p0, v0, args)
+
+    def check_args(self, args):
+        if not isinstance(args, dict):
+            args = {}
+        if not 'dof' in args:
+            args = AdiabaticProcess.default_args.copy()
+        return args
 
     def get_points(self, v, p):
         self.c = p * v ** self.gamma
@@ -16,14 +26,13 @@ class AdiabaticProcess(Process):
         P = p * (v / V) ** self.gamma
         return V, P
 
-    def get_equation(v, p, c, **kargs):
-        return p * v ** kargs['gamma'] - c
-    
+    def get_equation(v, p, c, args):
+        return sp.Eq(p * v ** ((args['dof']+2)/args['dof']), c)
+
     def evaluate(self, v):
         return self.c / v ** self.gamma
-    
-    def is_args_equivalent(self, args2):
-        if 'gamma' in args2:
-            return args2['gamma'] == self.gamma
-        else:
-            return self.gamma == 5/3
+
+    def update_args(self, args):
+        args = self.check_args(args)
+        self.dof = args['dof']
+        self.gamma = (self.dof + 2) / self.dof

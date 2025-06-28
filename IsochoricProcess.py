@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp
 
 from Process import Process
 
@@ -13,8 +14,8 @@ class IsochoricProcess(Process):
         P = np.array([self.prange[0], self.prange[1]])
         return V, P
 
-    def get_equation(v, p, c, **kargs):
-        return v - c
+    def get_equation(v, p, c, args):
+        return sp.Eq(v, c)
 
     def evaluate(self, p):
         return self.c

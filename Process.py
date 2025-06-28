@@ -1,20 +1,22 @@
 
 
 class Process:
-    def __init__(self, parent, p0, v0, args=None):
+    default_args = {}
+    
+    def __init__(self, parent, v0, p0, args=None):
         self.parent = parent
         self.plot_widget = parent.plot_widget
         self.vrange = self.parent.plot_widget.getViewBox().viewRange()[0]
         self.prange = self.parent.plot_widget.getViewBox().viewRange()[1]
         if self.vrange[0] <= 0:
             self.vrange = (1e-5, self.vrange[1])
-        self.line = self.plot_widget.plot(*self.get_points(p0, v0), pen='red')
+        self.line = self.plot_widget.plot(*self.get_points(v0, p0), pen='red')
         self.edges = []
-        self.point = (p0, v0)
+        self.point = (v0, p0)
         self.args = args
 
-    def move_with(self, p0, v0):
-        self.point = (p0, v0)
+    def move_with(self, v0, p0):
+        self.point = (v0, p0)
         self.update()
 
     def update(self):
@@ -28,5 +30,5 @@ class Process:
     def get_edges(self):
         return self.edges
 
-    def is_args_equivalent(self, args2):
-        return True
+    def update_args(self, args):
+        self.args = args
